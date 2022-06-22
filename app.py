@@ -22,7 +22,9 @@ def my_view_func(text):
                     xo.wait[key].done = True
                 elif "0" in value or "false" in value.lower():
                     xo.wait[key].done = False
-            res = xo.wait[key].done.value() == True
+            res = "0"
+            if xo.wait[key].done.value() == True:
+                res = "1"
             return "@"+res+str(xo.wait[key].value())+"@@@"
     return "@1"+text+"!!!"
 @app.route('/')
