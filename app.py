@@ -16,8 +16,8 @@ def my_view_func(text):
                     xo.await[key] = True
                 else:
                     xo.await[key] = False
-    return "!!!"+str(xo.await[key].value())+"!!!"
-  
+            return "@@@"+str(xo.await[key].value())+"@@@"
+    return "!!!"+text+"!!!"
 @app.route('/')
 def hello():
     return 'Hello, World!'
