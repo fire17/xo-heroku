@@ -20,7 +20,7 @@ def my_view_func(text):
                 print("value :::",value)
                 if len(text.split("/")) > 3 and len(text.split("/")[3])>0:
                     msg = text.split("/")[3]
-                    print("value :::",msg)
+                    print("msg :::",msg)
                     xo.wait[key] = msg
                 if "1" in value or "true" in value.lower():
                     xo.wait[key].done = True
@@ -30,7 +30,7 @@ def my_view_func(text):
             if xo.wait[key].done.value() == True:
                 res = "1"
             final = "@"+res+str(xo.wait[key].value())
-            print("value :::",msg)
+            print("msg :::",final)
             print()
             return final
     print()
