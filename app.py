@@ -8,6 +8,7 @@ app = Flask(__name__)
 @app.route('/<path:text>')
 def my_view_func(text):
     print("text :::",text)
+    text.replace("@@@"," ")
     if text.startswith("await/"):
         if len(text.split("/")[1])>0:
             key = text.split("/")[1]
