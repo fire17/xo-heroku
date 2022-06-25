@@ -1,0 +1,63 @@
+#!/bin/bash
+
+DEF="-"
+if [[ "$2" != "" ]]
+then
+        DEF="$2"
+fi
+# echo "${2: -1}"
+MSG="$(echo ${@:3})"
+# echo $MSG "!!!!!!"
+
+FIN="0"
+if [[ "$(echo $MSG)" == *"-s"* ]]
+then
+        MSG="${MSG// -s/}"
+        MSG="${MSG//-s/}"
+        echo " ::: SET & CONTINUE ::: $1: $DEF , msg: \"$MSG\" :::"
+        MSG="${MSG// /%20}"
+        URL="https://xo-db.herokuapp.com/await/$1/$DEF/$MSG"
+        echo " ::: target: $URL"
+        # echo "$URL"
+        # echo ""
+        FIN="1"
+fi
+MSG="${MSG// /%20}"
+URL="https://xo-db.herokuapp.com/await/$1/$DEF/$MSG"
+
+CHECK=$(curl -s $URL)
+CHECK0=$(echo $CHECK | cut -c2)
+
+while [[ "$(echo $CHECK | cut -c1)" != "@" ]];do
+        echo " ::: bad response, retry..." #$URL
+        CHECK=$(curl -s $URL)
+        CHECK0=$(echo $CHECK | cut -c2)
+done
+
+if [[ "$(echo $CHECK0)" == "1" ]];then
+                # echo "FIN $1"
+                FIN="1"
+fi
+# echo xxxxxxxx awaiting $1... $FIN $URL $DEF $MSG $CHECK $CHECK0
+while [[ "$FIN" != "1" ]]
+do 
+
+        CHECK=$(curl -s https://xo-db.herokuapp.com/await/$1) 2> /dev/null || echo "XXXXX"
+        #if [ "$($CHECK0)"=="@" ] && [ "$LAST" != "$CHECK" ]
+        CHECK0=$(echo $CHECK | cut -c2)
+        if [[ "$(echo $CHECK | cut -c1)" == "@" ]];then
+        if [[ "$(echo $LAST | cut -c 3-)" != "$(echo $CHECK | cut -c 3-)" ]];then
+                # echo $(echo $CHECK | cut -c 1-)
+                # echo $LAST 
+                # echo $CHECK 
+                echo " ::: $1 ::: " $(echo $CHECK | cut -c 3-)
+                LAST=$(echo $CHECK)
+        fi
+        fi
+        if [[ "$CHECK0" == "1" ]];then
+                FIN="1"
+        fi
+
+done
+echo " :::" DONE AWAITING ::: $1 ::: $(echo $CHECK | cut -c 3-)
+
